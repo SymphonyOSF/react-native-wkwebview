@@ -23,7 +23,7 @@ RCT_EXPORT_MODULE()
 
 - (UIView *)view
 {
-  RCTWKWebView *webView = [[RCTWKWebView alloc] initWithProcessPool:[[WKProcessPool alloc] init]];
+  RCTWKWebView *webView = [[RCTWKWebView alloc] init];
   webView.delegate = self;
   return webView;
 }
@@ -47,6 +47,16 @@ RCT_EXPORT_VIEW_PROPERTY(onMessage, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onScroll, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(hideKeyboardAccessoryView, BOOL)
 RCT_REMAP_VIEW_PROPERTY(allowsLinkPreview, _webView.allowsLinkPreview, BOOL)
+
+RCT_CUSTOM_VIEW_PROPERTY(webViewFactory, NSString, RCTWKWebView)
+{
+  id<RCTWKWebViewFactory> webViewFactory = [self.bridge moduleForName:json];
+  if (webViewFactory == nil) {
+    [view instantiateDefaultWebView];
+  } else {
+    [view instantiateWebViewWithFactory:webViewFactory];
+  }
+}
 
 RCT_EXPORT_METHOD(goBack:(nonnull NSNumber *)reactTag)
 {

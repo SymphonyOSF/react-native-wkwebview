@@ -12,6 +12,12 @@
  */
 extern NSString *const RCTJSNavigationScheme;
 
+@protocol RCTWKWebViewFactory <NSObject>
+
+- (WKWebView *)newWebViewWithFrame:(CGRect)frame configuration:(WKWebViewConfiguration *)config;
+
+@end
+
 @protocol RCTWKWebViewDelegate <NSObject>
 
 - (BOOL)webView:(RCTWKWebView *)webView
@@ -22,8 +28,6 @@ shouldStartLoadForRequest:(NSMutableDictionary<NSString *, id> *)request
 
 @interface RCTWKWebView : RCTView
 
-- (instancetype)initWithProcessPool:(WKProcessPool *)processPool;
-
 @property (nonatomic, weak) id<RCTWKWebViewDelegate> delegate;
 
 @property (nonatomic, copy) NSDictionary *source;
@@ -33,6 +37,8 @@ shouldStartLoadForRequest:(NSMutableDictionary<NSString *, id> *)request
 @property (nonatomic, copy) NSString *injectedJavaScript;
 @property (nonatomic, assign) BOOL hideKeyboardAccessoryView;
 
+- (void)instantiateDefaultWebView;
+- (void)instantiateWebViewWithFactory:(id<RCTWKWebViewFactory>)webViewFactory;
 
 - (void)goForward;
 - (void)goBack;

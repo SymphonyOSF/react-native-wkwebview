@@ -51,7 +51,7 @@
 
 RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
-- (instancetype)initWithProcessPool:(WKProcessPool *)processPool
+- (instancetype)init
 {
   if(self = [self initWithFrame:CGRectZero])
   {
@@ -59,21 +59,38 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
     _automaticallyAdjustContentInsets = YES;
     _contentInset = UIEdgeInsetsZero;
-
-    WKWebViewConfiguration* config = [[WKWebViewConfiguration alloc] init];
-    config.processPool = processPool;
-    WKUserContentController* userController = [[WKUserContentController alloc]init];
-    [userController addScriptMessageHandler:[[WeakScriptMessageDelegate alloc] initWithDelegate:self] name:@"reactNative"];
-    config.userContentController = userController;
-
-    _webView = [[WKWebView alloc] initWithFrame:self.bounds configuration:config];
-    _webView.UIDelegate = self;
-    _webView.navigationDelegate = self;
-    _webView.scrollView.delegate = self;
-    [_webView addObserver:self forKeyPath:@"estimatedProgress" options:NSKeyValueObservingOptionNew context:nil];
-    [self addSubview:_webView];
   }
   return self;
+}
+
+- (void)instantiateDefaultWebView
+{
+  [self configureWithWebView:[[WKWebView alloc] initWithFrame:self.bounds configuration:[self webViewConfiguration]]];
+}
+
+- (void)instantiateWebViewWithFactory:(id<RCTWKWebViewFactory>)webViewFactory
+{
+  [self configureWithWebView:[webViewFactory newWebViewWithFrame:self.bounds configuration:[self webViewConfiguration]]];
+}
+
+- (void)configureWithWebView:(WKWebView *)webView
+{
+  _webView = webView;
+  _webView.UIDelegate = self;
+  _webView.navigationDelegate = self;
+  _webView.scrollView.delegate = self;
+  [_webView addObserver:self forKeyPath:@"estimatedProgress" options:NSKeyValueObservingOptionNew context:nil];
+  [self addSubview:_webView];
+}
+
+- (WKWebViewConfiguration *)webViewConfiguration
+{
+  WKWebViewConfiguration* config = [[WKWebViewConfiguration alloc] init];
+  config.processPool = [[WKProcessPool alloc] init];
+  WKUserContentController* userController = [[WKUserContentController alloc]init];
+  [userController addScriptMessageHandler:[[WeakScriptMessageDelegate alloc] initWithDelegate:self] name:@"reactNative"];
+  config.userContentController = userController;
+  return config;
 }
 
 - (void)loadRequest:(NSURLRequest *)request
