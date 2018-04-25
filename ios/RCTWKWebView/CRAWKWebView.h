@@ -12,6 +12,12 @@
  */
 extern NSString *const RCTJSNavigationScheme;
 
+@protocol CRAWKWebViewFactory <NSObject>
+
+- (WKWebView *)newWebViewWithFrame:(CGRect)frame configuration:(WKWebViewConfiguration *)config;
+
+@end
+
 @protocol CRAWKWebViewDelegate <NSObject>
 
 - (BOOL)webView:(CRAWKWebView *)webView
@@ -21,8 +27,6 @@ shouldStartLoadForRequest:(NSMutableDictionary<NSString *, id> *)request
 @end
 
 @interface CRAWKWebView : RCTView
-
-- (instancetype)initWithProcessPool:(WKProcessPool *)processPool;
 
 @property (nonatomic, weak) id<CRAWKWebViewDelegate> delegate;
 
@@ -39,6 +43,8 @@ shouldStartLoadForRequest:(NSMutableDictionary<NSString *, id> *)request
 @property (nonatomic, assign) BOOL hideKeyboardAccessoryView;
 @property (nonatomic, assign) BOOL keyboardDisplayRequiresUserAction;
 
+- (void)instantiateDefaultWebView;
+- (void)instantiateWebViewWithFactory:(id<CRAWKWebViewFactory>)webViewFactory;
 
 - (void)goForward;
 - (void)goBack;
