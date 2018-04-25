@@ -56,37 +56,13 @@
 
 RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
 
-- (instancetype)initWithProcessPool:(WKProcessPool *)processPool
+- (instancetype)init
 {
   if(self = [self initWithFrame:CGRectZero])
   {
     super.backgroundColor = [UIColor clearColor];
     _automaticallyAdjustContentInsets = YES;
     _contentInset = UIEdgeInsetsZero;
-    
-    WKWebViewConfiguration* config = [[WKWebViewConfiguration alloc] init];
-    config.processPool = processPool;
-    WKUserContentController* userController = [[WKUserContentController alloc]init];
-    [userController addScriptMessageHandler:[[WeakScriptMessageDelegate alloc] initWithDelegate:self] name:@"reactNative"];
-    config.userContentController = userController;
-    
-    _webView = [[WKWebView alloc] initWithFrame:self.bounds configuration:config];
-    _webView.UIDelegate = self;
-    _webView.navigationDelegate = self;
-    _webView.scrollView.delegate = self;
-    
-#if defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 110000 /* __IPHONE_11_0 */
-    // `contentInsetAdjustmentBehavior` is only available since iOS 11.
-    // We set the default behavior to "never" so that iOS
-    // doesn't do weird things to UIScrollView insets automatically
-    // and keeps it as an opt-in behavior.
-    if ([_webView.scrollView respondsToSelector:@selector(setContentInsetAdjustmentBehavior:)]) {
-      _webView.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
-    }
-#endif
-    [self setupPostMessageScript];
-    [_webView addObserver:self forKeyPath:@"estimatedProgress" options:NSKeyValueObservingOptionNew context:nil];
-    [self addSubview:_webView];
   }
   return self;
 }
@@ -151,6 +127,45 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
                                                forMainFrameOnly:_injectedJavaScriptForMainFrameOnly];
     [_webView.configuration.userContentController addUserScript:script];
   }
+- (void)instantiateDefaultWebView
+{
+  [self configureWithWebView:[[WKWebView alloc] initWithFrame:self.bounds configuration:[self webViewConfiguration]]];
+}
+
+- (void)instantiateWebViewWithFactory:(id<CRAWKWebViewFactory>)webViewFactory
+{
+  [self configureWithWebView:[webViewFactory newWebViewWithFrame:self.bounds configuration:[self webViewConfiguration]]];
+}
+
+- (void)configureWithWebView:(WKWebView *)webView
+{
+  _webView = webView;
+  _webView.UIDelegate = self;
+  _webView.navigationDelegate = self;
+  _webView.scrollView.delegate = self;
+
+#if defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 110000 /* __IPHONE_11_0 */
+  // `contentInsetAdjustmentBehavior` is only available since iOS 11.
+  // We set the default behavior to "never" so that iOS
+  // doesn't do weird things to UIScrollView insets automatically
+  // and keeps it as an opt-in behavior.
+  if ([_webView.scrollView respondsToSelector:@selector(setContentInsetAdjustmentBehavior:)]) {
+    _webView.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+  }
+#endif
+  [self setupPostMessageScript];
+  [_webView addObserver:self forKeyPath:@"estimatedProgress" options:NSKeyValueObservingOptionNew context:nil];
+  [self addSubview:_webView];
+}
+
+- (WKWebViewConfiguration *)webViewConfiguration
+{
+  WKWebViewConfiguration* config = [[WKWebViewConfiguration alloc] init];
+  config.processPool = [[WKProcessPool alloc] init];
+  WKUserContentController* userController = [[WKUserContentController alloc]init];
+  [userController addScriptMessageHandler:[[WeakScriptMessageDelegate alloc] initWithDelegate:self] name:@"reactNative"];
+  config.userContentController = userController;
+  return config;
 }
 
 - (void)loadRequest:(NSURLRequest *)request

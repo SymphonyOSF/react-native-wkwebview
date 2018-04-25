@@ -272,6 +272,17 @@ class WKWebView extends React.Component {
       'on-drag',
       'interactive', // iOS only
     ]),
+    /**
+     * A String value that represents the name of module that implements RCTWKWebViewFactory. If it
+     * resolves to a non-nil object, it will be used to instanciate the WKWebView that will be
+     * rendered by this component. It can be used as a dependency injection entry point, so that
+     * external users can customize the WKWebView in use.
+    */
+    webViewFactory: PropTypes.string,
+  };
+
+  static defaultProps = {
+    webViewFactory: '',
   };
 
   state = {
@@ -369,6 +380,7 @@ class WKWebView extends React.Component {
         directionalLockEnabled={this.props.directionalLockEnabled}
         onNavigationResponse={this._onNavigationResponse}
         keyboardDismissMode={this.props.keyboardDismissMode}
+        webViewFactory={this.props.webViewFactory}
       />;
 
     return (

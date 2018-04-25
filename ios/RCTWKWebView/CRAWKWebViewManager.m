@@ -43,7 +43,7 @@ RCT_EXPORT_MODULE()
 
 - (UIView *)view
 {
-  CRAWKWebView *webView = [[CRAWKWebView alloc] initWithProcessPool:[WKProcessPool sharedProcessPool]];
+  CRAWKWebView *webView = [[CRAWKWebView alloc] init];
   webView.delegate = self;
   return webView;
 }
@@ -77,6 +77,16 @@ RCT_EXPORT_VIEW_PROPERTY(allowsLinkPreview, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(contentInsetAdjustmentBehavior, UIScrollViewContentInsetAdjustmentBehavior)
 #endif
 RCT_EXPORT_VIEW_PROPERTY(onNavigationResponse, RCTDirectEventBlock)
+
+RCT_CUSTOM_VIEW_PROPERTY(webViewFactory, NSString, RCTWKWebView)
+{
+  id<CRAWKWebViewFactory> webViewFactory = [self.bridge moduleForName:json];
+  if (webViewFactory == nil) {
+    [view instantiateDefaultWebView];
+  } else {
+    [view instantiateWebViewWithFactory:webViewFactory];
+  }
+}
 
 RCT_EXPORT_METHOD(goBack:(nonnull NSNumber *)reactTag)
 {
