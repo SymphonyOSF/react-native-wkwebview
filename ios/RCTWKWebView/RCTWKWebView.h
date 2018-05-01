@@ -36,6 +36,7 @@ shouldStartLoadForRequest:(NSMutableDictionary<NSString *, id> *)request
 @property (nonatomic, assign) BOOL openNewWindowInWebView;
 @property (nonatomic, copy) NSString *injectedJavaScript;
 @property (nonatomic, assign) BOOL hideKeyboardAccessoryView;
+@property (nonatomic, copy) NSDictionary *userData;
 
 - (void)instantiateDefaultWebView;
 - (void)instantiateWebViewWithFactory:(id<RCTWKWebViewFactory>)webViewFactory;
