@@ -42,6 +42,7 @@ shouldStartLoadForRequest:(NSMutableDictionary<NSString *, id> *)request
 @property (nonatomic, copy) NSString *injectedJavaScript;
 @property (nonatomic, assign) BOOL hideKeyboardAccessoryView;
 @property (nonatomic, assign) BOOL keyboardDisplayRequiresUserAction;
+@property (nonatomic, copy) NSDictionary *userData;
 
 - (void)instantiateDefaultWebView;
 - (void)instantiateWebViewWithFactory:(id<CRAWKWebViewFactory>)webViewFactory;
