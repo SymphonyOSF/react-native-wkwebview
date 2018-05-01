@@ -273,6 +273,11 @@ class WKWebView extends React.Component {
       'interactive', // iOS only
     ]),
     /**
+     * Custom information that can be used, for instance, in a custom WKWebView implementation.
+     * It can be retrieved by accessing the WKWebView's superview, and casting it to RCTWKWebView.
+    */
+    userData: PropTypes.object,
+    /**
      * A String value that represents the name of module that implements RCTWKWebViewFactory. If it
      * resolves to a non-nil object, it will be used to instanciate the WKWebView that will be
      * rendered by this component. It can be used as a dependency injection entry point, so that
@@ -380,6 +385,7 @@ class WKWebView extends React.Component {
         directionalLockEnabled={this.props.directionalLockEnabled}
         onNavigationResponse={this._onNavigationResponse}
         keyboardDismissMode={this.props.keyboardDismissMode}
+        userData={this.props.userData}
         webViewFactory={this.props.webViewFactory}
       />;
 

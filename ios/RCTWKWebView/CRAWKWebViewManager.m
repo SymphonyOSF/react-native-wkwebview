@@ -77,6 +77,7 @@ RCT_EXPORT_VIEW_PROPERTY(allowsLinkPreview, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(contentInsetAdjustmentBehavior, UIScrollViewContentInsetAdjustmentBehavior)
 #endif
 RCT_EXPORT_VIEW_PROPERTY(onNavigationResponse, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(userData, NSDictionary)
 
 RCT_CUSTOM_VIEW_PROPERTY(webViewFactory, NSString, RCTWKWebView)
 {
