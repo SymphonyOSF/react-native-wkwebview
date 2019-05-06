@@ -79,7 +79,7 @@ RCT_EXPORT_VIEW_PROPERTY(contentInsetAdjustmentBehavior, UIScrollViewContentInse
 RCT_EXPORT_VIEW_PROPERTY(onNavigationResponse, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(userData, NSDictionary)
 
-RCT_CUSTOM_VIEW_PROPERTY(webViewFactory, NSString, RCTWKWebView)
+RCT_CUSTOM_VIEW_PROPERTY(webViewFactory, NSString, CRAWKWebView)
 {
   id<CRAWKWebViewFactory> webViewFactory = [self.bridge moduleForName:json];
   if (webViewFactory == nil) {
