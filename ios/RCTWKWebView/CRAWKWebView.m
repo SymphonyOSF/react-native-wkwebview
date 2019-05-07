@@ -127,6 +127,8 @@ RCT_NOT_IMPLEMENTED(- (instancetype)initWithCoder:(NSCoder *)aDecoder)
                                                forMainFrameOnly:_injectedJavaScriptForMainFrameOnly];
     [_webView.configuration.userContentController addUserScript:script];
   }
+}
+
 - (void)instantiateDefaultWebView
 {
   [self configureWithWebView:[[WKWebView alloc] initWithFrame:self.bounds configuration:[self webViewConfiguration]]];
